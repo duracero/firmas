@@ -131,9 +131,9 @@
                         </div>
                         <div class="col-12 mt-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="input-social" checked>
+                                <input class="form-check-input" type="checkbox" value="" id="input-social" disabled>
                                 <label class="form-check-label" for="input-social">
-                                    Incluir redes sociales
+                                    Incluir redes sociales (Muy Pronto)
                                 </label>
                             </div>
                         </div>
@@ -224,10 +224,16 @@
                                         </tbody></table>
                                     </td>
                                 </tr>
+                                <tr id="sig-spacer" style="display: none;">
+                                    <td colspan="3">&nbsp;</td>
+                                </tr>
                                 <tr id="sig-data-policy" style="display: none;">
                                     <td colspan="3" style="padding-top: 20px; padding-bottom: 20px; border-top: 1px solid #dddddd; font-family: Arial, sans-serif; font-size: 10px; color: #888888;">
                                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                             <tbody>
+                                            <tr>
+                                                <td colspan="2" style="padding-bottom: 10px; font-weight: bold; font-size: 12px; color: #333333;">Información sobre protección de datos</td>
+                                            </tr>
                                             <tr>
                                                 <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Responsable del Tratamiento</td>
                                                 <td style="padding: 2px 5px;">HIERROS DURACERO SL</td>
@@ -301,7 +307,7 @@
 
         const toggles = {
             'input-social': 'sig-social-media',
-            'input-policy': 'sig-data-policy'
+            'input-policy': ['sig-spacer', 'sig-data-policy']
         };
 
         const defaults = {
@@ -309,8 +315,8 @@
             'input-job': 'Cargo / Puesto',
             'input-phone': '+34 600 000 000',
             'input-email': 'email@duracero.com',
-            'input-social': true,
-            'input-policy': false
+            'input-social': false,
+            'input-policy': true
         };
 
         let bsToast;
@@ -343,14 +349,17 @@
                 const checkbox = document.getElementById(toggleId);
                 if (!checkbox) return;
                 checkbox.addEventListener('change', function() {
-                    const targetElement = document.getElementById(toggles[toggleId]);
-                    if (!targetElement) return;
-                    
-                    if (this.checked) {
-                        targetElement.style.display = 'table-row';
-                    } else {
-                        targetElement.style.display = 'none';
-                    }
+                    const targets = Array.isArray(toggles[toggleId]) ? toggles[toggleId] : [toggles[toggleId]];
+                    targets.forEach(targetId => {
+                        const targetElement = document.getElementById(targetId);
+                        if (!targetElement) return;
+
+                        if (this.checked) {
+                            targetElement.style.display = 'table-row';
+                        } else {
+                            targetElement.style.display = 'none';
+                        }
+                    });
                 });
             });
         }
