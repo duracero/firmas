@@ -129,6 +129,22 @@
                             <label for="input-email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="input-email" placeholder="Ej. juan.perez@duracero.com">
                         </div>
+                        <div class="col-12 mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="input-social" checked>
+                                <label class="form-check-label" for="input-social">
+                                    Incluir redes sociales
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="input-policy">
+                                <label class="form-check-label" for="input-policy">
+                                    Incluir política de protección de datos
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,12 +155,13 @@
                 <div class="card shadow-sm tarjeta-content">
                     <div class="card-body">
                         <div id="signature-render">
+                            <!-- INICIO DEL DISENO DE FIRMA -->
                             <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333333; min-width: 450px;">
-                                <tr>
+                                <tbody><tr>
                                     <!-- Datos Personales -->
-                                    <td style="padding-right: 20px;">
+                                    <td style="padding-right: 20px; vertical-align: top;">
                                         <table cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
+                                            <tbody><tr>
                                                 <td style="padding-bottom: 2px;">
                                                     <strong id="sig-name" style="font-size: 18px; color: #121112; font-family: Arial, sans-serif;">Nombre Apellido</strong>
                                                 </td>
@@ -154,7 +171,7 @@
                                             </tr>
                                             <tr>
                                                 <td style="padding-bottom: 5px;">
-                                                    <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit/phone-icon-red.png" width="13" alt="Phone" style="vertical-align: middle;">
+                                                    <span style="vertical-align: middle;">📞</span>
                                                     <a id="sig-phone-link" href="tel:600000000" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 5px;">
                                                         <span id="sig-phone">600 000 000</span>
                                                     </a>
@@ -162,41 +179,87 @@
                                             </tr>
                                             <tr>
                                                 <td style="padding-bottom: 5px;">
-                                                    <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit/email-icon-red.png" width="13" alt="Email" style="vertical-align: middle;">
+                                                    <span style="vertical-align: middle;">✉️</span>
                                                     <a id="sig-email-link" href="mailto:email@duracero.com" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 5px;">
                                                         <span id="sig-email">email@duracero.com</span>
                                                     </a>
                                                 </td>
                                             </tr>
-                                        </table>
+                                        </tbody></table>
                                     </td>
 
                                     <!-- Separador Vertical -->
                                     <td width="20" style="border-left: 2px solid #E20613;"></td>
 
                                     <!-- Logo y Redes -->
-                                    <td style="padding-left: 20px; vertical-align: middle; text-align: center;">
+                                    <td style="padding-left: 20px; vertical-align: top; text-align: left;">
                                         <table cellpadding="0" cellspacing="0" border="0">
-                                            <tr>
+                                            <tbody><tr>
                                                 <td style="padding-bottom: 15px;">
                                                     <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" width="140" style="border: 0;">
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td style="text-align: center;">
-                                                    <a href="https://www.linkedin.com/company/hierros-duracero-sl" target="_blank" style="text-decoration: none; display: inline-block; margin-right: 8px;">
-                                                        <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit/linkedin-icon-red.png" width="22" alt="LinkedIn">
+                                            <tr id="sig-social-media">
+                                                <td style="text-align: left; font-size: 13px;">
+                                                    <a href="https://www.linkedin.com/company/hierros-duracero-sl" target="_blank" style="text-decoration: none; color: #0077B5; font-weight: bold; margin-right: 10px;">
+                                                       LinkedIn
                                                     </a>
-                                                    <a href="https://duracero.com" target="_blank" style="text-decoration: none; font-size: 13px; font-weight: bold; color: #E20613; vertical-align: middle;">
+                                                    <a href="https://www.instagram.com/hierrosduracero" target="_blank" style="text-decoration: none; color: #E4405F; font-weight: bold;">
+                                                       Instagram
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 5px; text-align: left; font-size: 13px; color: #333333;">
+                                                    Av. Alcodar, 16 (P.I. Alcodar). 46701 Gandía (Valencia)
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 5px; text-align: left;">
+                                                     <a href="https://duracero.com" target="_blank" style="text-decoration: none; font-size: 13px; font-weight: bold; color: #E20613;">
                                                         duracero.com
                                                     </a>
                                                 </td>
                                             </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                                <tr id="sig-data-policy" style="display: none;">
+                                    <td colspan="3" style="padding-top: 15px; border-top: 1px solid #dddddd; font-family: Arial, sans-serif; font-size: 10px; color: #888888;">
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Responsable del Tratamiento</td>
+                                                <td style="padding: 2px 5px;">HIERROS DURACERO SL</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Finalidad del Tratamiento</td>
+                                                <td style="padding: 2px 5px;">Gestiones de comunicación con los clientes, proveedores y  contactos.</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Legitimación del Tratamiento</td>
+                                                <td style="padding: 2px 5px;">Consentimiento del Interesado</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Destinatario del Tratamiento</td>
+                                                <td style="padding: 2px 5px;">No se cederán datos a terceros, salvo obligación legal.</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Ejercicio de Derechos</td>
+                                                <td style="padding: 2px 5px;">Acceso, Rectificación, Supresión y Portabilidad de los datos aportados ante HIERROS DURACERO SL y limitación u oposición al tratamiento.</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="padding-top: 5px; text-align: left;">
+                                                    Para más información diríjase a <a href="http://www.duracero.com/avisos_legal_mail" style="color: #888888; text-decoration: none;">www.duracero.com/avisos_legal_mail</a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
                                         </table>
                                     </td>
                                 </tr>
-                            </table>
+                            </tbody></table>
                         </div>
+                        <!-- FIN DEL DISENO DE FIRMA -->
                     </div>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end m-top">
@@ -236,11 +299,18 @@
             'input-email': { id: 'sig-email-link', prefix: 'mailto:' }
         };
 
+        const toggles = {
+            'input-social': 'sig-social-media',
+            'input-policy': 'sig-data-policy'
+        };
+
         const defaults = {
             'input-name': 'Nombre Apellido',
             'input-job': 'Cargo / Puesto',
             'input-phone': '+34 600 000 000',
             'input-email': 'email@duracero.com',
+            'input-social': true,
+            'input-policy': false
         };
 
         let bsToast;
@@ -250,40 +320,73 @@
             if (toastEl) {
                 bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
             }
+            setupEventListeners();
             loadData();
         });
 
-        Object.keys(fields).forEach(inputId => {
-            const input = document.getElementById(inputId);
-            input.addEventListener('input', function() {
-                const targetElement = document.getElementById(fields[inputId]);
-                targetElement.textContent = this.value.trim() === '' ? defaults[inputId] : this.value;
-                
-                if (links[inputId]) {
-                    document.getElementById(links[inputId].id).href = links[inputId].prefix + this.value.replace(/\s+/g, '');
-                }
+        function setupEventListeners() {
+            Object.keys(fields).forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (!input) return;
+                input.addEventListener('input', function() {
+                    const targetElement = document.getElementById(fields[inputId]);
+                    if (!targetElement) return;
+                    targetElement.textContent = this.value.trim() === '' ? defaults[inputId] : this.value;
+
+                    if (links[inputId]) {
+                        document.getElementById(links[inputId].id).href = links[inputId].prefix + this.value.replace(/\s+/g, '');
+                    }
+                });
             });
-        });
+
+            Object.keys(toggles).forEach(toggleId => {
+                const checkbox = document.getElementById(toggleId);
+                if (!checkbox) return;
+                checkbox.addEventListener('change', function() {
+                    const targetElement = document.getElementById(toggles[toggleId]);
+                    if (!targetElement) return;
+                    
+                    if (this.checked) {
+                        targetElement.style.display = 'table-row';
+                    } else {
+                        targetElement.style.display = 'none';
+                    }
+                });
+            });
+        }
 
         function loadData() {
             const savedData = JSON.parse(localStorage.getItem('duraceroSignatureData'));
-            if (savedData) {
-                Object.keys(savedData).forEach(key => {
-                    const el = document.getElementById(key);
-                    if(el) {
-                        el.value = savedData[key];
-                        el.dispatchEvent(new Event('input'));
-                    }
-                });
-            } else {
-                resetFields(false); // No mostrar toast en la carga inicial
+            const dataToLoad = savedData || defaults;
+
+            Object.keys(defaults).forEach(key => {
+                const el = document.getElementById(key);
+                if (!el) return;
+
+                if (el.type === 'checkbox') {
+                    el.checked = dataToLoad[key] === true; // Ensure boolean
+                } else {
+                    el.value = dataToLoad[key] || defaults[key];
+                }
+                el.dispatchEvent(new Event('input'));
+                el.dispatchEvent(new Event('change'));
+            });
+
+            if (!savedData) {
+                 resetFields(false); // No mostrar toast en la carga inicial
             }
         }
 
         function saveData() {
             const data = {};
             Object.keys(defaults).forEach(key => {
-                data[key] = document.getElementById(key).value;
+                 const el = document.getElementById(key);
+                 if (!el) return;
+                 if (el.type === 'checkbox') {
+                    data[key] = el.checked;
+                 } else {
+                    data[key] = el.value;
+                 }
             });
             localStorage.setItem('duraceroSignatureData', JSON.stringify(data));
             showToast("Datos guardados en este navegador.", 'success');
@@ -292,8 +395,14 @@
         function resetFields(show = true) {
             Object.keys(defaults).forEach(key => {
                 const el = document.getElementById(key);
-                el.value = defaults[key];
+                if (!el) return;
+                if (el.type === 'checkbox') {
+                    el.checked = defaults[key];
+                } else {
+                    el.value = defaults[key];
+                }
                 el.dispatchEvent(new Event('input'));
+                el.dispatchEvent(new Event('change'));
             });
             localStorage.removeItem('duraceroSignatureData');
             if (show) {
@@ -307,7 +416,7 @@
             range.selectNode(signatureElement);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
-            
+
             try {
                 document.execCommand('copy');
                 showToast("¡Firma copiada! Pégala en la configuración de tu cliente de email.");
@@ -321,7 +430,7 @@
         function showToast(message, type = 'success') {
             const toastEl = document.getElementById('toast');
             const toastBody = toastEl.querySelector('.toast-body');
-            
+
             toastEl.className = 'toast align-items-center text-white border-0'; // Reset classes
             if (type === 'danger') {
                 toastEl.classList.add('bg-danger');
