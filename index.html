@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Firmas v4 - HIERROS DURACERO</title>
+    <title>Generador de Firmas v5 - HIERROS DURACERO</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -39,7 +39,7 @@
             border-bottom: 1px solid #dee2e6;
         }
 
-        /* Estilos para Inputs Desactivados Visualmente */
+        /* Feedback visual para campos ocultos */
         .input-group.field-hidden .form-control {
             background-color: #f2f2f2;
             color: #adb5bd;
@@ -103,8 +103,8 @@
 <nav class="navbar navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
         <a class="navbar-brand" href="#">
-            <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero">
-            <span class="ms-2 fs-6 text-muted align-middle">| Generador v4</span>
+            <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" style="height: 25px;">
+            <span class="ms-2 fs-6 text-muted align-middle">| Generador v5</span>
         </a>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-secondary btn-sm" onclick="triggerImport()" title="Importar configuración">
@@ -159,7 +159,7 @@
                         <label for="input-photo-url" class="form-label small">URL de la imagen (Cuadrada)</label>
                         <input type="url" class="form-control form-control-sm mb-1" id="input-photo-url" placeholder="https://...">
                         <small class="text-muted d-block" style="font-size: 0.70rem;">
-                            La imagen se recortará en círculo automáticamente.
+                            La imagen se recortará en círculo automáticamente (60x60px).
                         </small>
                     </div>
 
@@ -221,7 +221,7 @@
                         <div id="signature-render">
                             <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333333; min-width: 450px; background-color: transparent;">
                                 <tbody>
-                                <!-- FILA PRINCIPAL: All el contenido en una fila para asegurar alturas iguales -->
+                                <!-- FILA PRINCIPAL -->
                                 <tr>
                                     <!-- 1. CELDA FOTO (Opcional) -->
                                     <td id="sig-photo-cell" style="padding-right: 15px; vertical-align: top; width: 60px; display: none;">
@@ -260,7 +260,7 @@
                                         </table>
                                     </td>
 
-                                    <!-- 3. CELDA LINEA DIVISORIA (Se estira automáticamente) -->
+                                    <!-- 3. CELDA LINEA DIVISORIA -->
                                     <td width="1" bgcolor="#E20613" style="width: 1px; font-size: 1px; line-height: 1px;">&nbsp;</td>
 
                                     <!-- 4. CELDA LOGO Y DIRECCIÓN -->
@@ -269,8 +269,8 @@
                                             <tbody>
                                             <tr>
                                                 <td style="padding-bottom: 10px;">
-                                                    <!-- Logo con ID para cambiar tamaño via JS -->
-                                                    <img id="sig-logo" src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" height="35" style="display: block; border: 0;">
+                                                    <!-- LOGO NATIVO 214x25 -->
+                                                    <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" width="214" height="25" style="display: block; border: 0; max-width: 214px;">
                                                 </td>
                                             </tr>
                                             <tr id="sig-social-media" style="display: none;">
@@ -388,7 +388,7 @@
         if (toastEl) bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
 
         setupListeners();
-        const saved = localStorage.getItem('duraceroSignatureV4');
+        const saved = localStorage.getItem('duraceroSignatureV5');
         if (saved) {
             try { currentState = { ...defaults, ...JSON.parse(saved) }; }
             catch(e) { console.error('Error', e); }
@@ -452,20 +452,15 @@
         document.getElementById('sig-email').textContent = currentState.email || defaults.email;
         document.getElementById('sig-email-link').href = 'mailto:' + (currentState.email || defaults.email);
 
-        // LOGICA FOTO Y LOGO
+        // LOGICA FOTO (El logo ya no cambia, siempre es 214x25)
         const imgEl = document.getElementById('sig-photo-img');
         const cellEl = document.getElementById('sig-photo-cell');
-        const logoEl = document.getElementById('sig-logo');
 
         if (currentState.showPhoto && currentState.photoUrl) {
             imgEl.src = currentState.photoUrl;
             cellEl.style.display = 'table-cell';
-            // Si hay foto, el logo se reduce
-            logoEl.height = 25;
         } else {
             cellEl.style.display = 'none';
-            // Si no hay foto, el logo tiene tamaño normal
-            logoEl.height = 35;
         }
 
         document.getElementById('row-job').style.display = currentState.showJob ? 'table-row' : 'none';
@@ -518,13 +513,13 @@
     }
 
     function saveLocal() {
-        localStorage.setItem('duraceroSignatureV4', JSON.stringify(currentState));
+        localStorage.setItem('duraceroSignatureV5', JSON.stringify(currentState));
     }
 
     function resetFields() {
         if(confirm('¿Restablecer valores por defecto?')) {
             currentState = { ...defaults };
-            localStorage.removeItem('duraceroSignatureV4');
+            localStorage.removeItem('duraceroSignatureV5');
             updateUIFromState();
             showToast('Datos restablecidos', 'secondary');
         }
