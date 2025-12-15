@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Firmas v5 - HIERROS DURACERO</title>
+    <title>Generador de Firmas v6 - HIERROS DURACERO</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -39,7 +39,6 @@
             border-bottom: 1px solid #dee2e6;
         }
 
-        /* Feedback visual para campos ocultos */
         .input-group.field-hidden .form-control {
             background-color: #f2f2f2;
             color: #adb5bd;
@@ -77,11 +76,12 @@
             background-color: white;
             border: 1px solid #dee2e6;
             border-radius: 0.375rem;
-            padding: 30px;
-            min-height: 300px;
+            padding: 40px;
+            min-height: 350px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
         }
 
         .section-title {
@@ -104,7 +104,7 @@
     <div class="container">
         <a class="navbar-brand" href="#">
             <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" style="height: 25px;">
-            <span class="ms-2 fs-6 text-muted align-middle">| Generador v5</span>
+            <span class="ms-2 fs-6 text-muted align-middle">| Generador v6</span>
         </a>
         <div class="d-flex gap-2">
             <button class="btn btn-outline-secondary btn-sm" onclick="triggerImport()" title="Importar configuración">
@@ -159,7 +159,7 @@
                         <label for="input-photo-url" class="form-label small">URL de la imagen (Cuadrada)</label>
                         <input type="url" class="form-control form-control-sm mb-1" id="input-photo-url" placeholder="https://...">
                         <small class="text-muted d-block" style="font-size: 0.70rem;">
-                            La imagen se recortará en círculo automáticamente (60x60px).
+                            La imagen se recortará en círculo automáticamente (100x100px).
                         </small>
                     </div>
 
@@ -217,41 +217,46 @@
 
                     <div class="preview-container mb-4 flex-grow-1">
 
-                        <!-- INICIO DISEÑO FIRMA -->
+                        <!-- INICIO DISEÑO FIRMA MODERNA -->
                         <div id="signature-render">
-                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333333; min-width: 450px; background-color: transparent;">
+                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333333; min-width: 500px; background-color: transparent;">
                                 <tbody>
-                                <!-- FILA PRINCIPAL -->
                                 <tr>
-                                    <!-- 1. CELDA FOTO (Opcional) -->
-                                    <td id="sig-photo-cell" style="padding-right: 15px; vertical-align: top; width: 60px; display: none;">
-                                        <img id="sig-photo-img" src="" alt="Foto" width="60" height="60" style="display: block; border-radius: 50%; object-fit: cover; border: 0;">
+                                    <!-- 1. CELDA FOTO (Grande y Centrada Verticalmente) -->
+                                    <td id="sig-photo-cell" style="padding-right: 25px; vertical-align: middle; width: 100px; display: none;">
+                                        <div style="width: 100px; height: 100px;">
+                                            <img id="sig-photo-img" src="" alt="Avatar" width="100" height="100" style="display: block; border-radius: 50%; object-fit: cover; border: 0;">
+                                        </div>
                                     </td>
 
-                                    <!-- 2. CELDA DATOS -->
-                                    <td style="vertical-align: top; padding-right: 20px;">
+                                    <!-- 2. CELDA DATOS PERSONALES -->
+                                    <td style="vertical-align: top; padding-right: 25px;">
                                         <table cellpadding="0" cellspacing="0" border="0">
                                             <tbody>
                                             <tr>
-                                                <td style="padding-bottom: 2px;">
-                                                    <strong id="sig-name" style="font-size: 18px; color: #121112; font-family: Arial, sans-serif; white-space: nowrap;">Nombre Apellido</strong>
+                                                <td style="padding-bottom: 4px;">
+                                                    <strong id="sig-name" style="font-size: 20px; color: #121112; font-family: 'Segoe UI', Arial, sans-serif; white-space: nowrap;">Nombre Apellido</strong>
                                                 </td>
                                             </tr>
                                             <tr id="row-job">
-                                                <td id="sig-job" style="padding-bottom: 10px; font-size: 13px; font-weight: bold; color: #E20613; font-family: Arial, sans-serif; text-transform: uppercase;">Cargo / Puesto</td>
+                                                <td id="sig-job" style="padding-bottom: 12px; font-size: 11px; font-weight: bold; color: #E20613; font-family: 'Segoe UI', Arial, sans-serif; text-transform: uppercase; letter-spacing: 1.5px;">CARGO / PUESTO</td>
                                             </tr>
+                                            <!-- Separador sutil -->
+                                            <tr><td style="border-bottom: 1px solid #eeeeee; padding-bottom: 10px; margin-bottom: 10px; display: block; width: 100%;"></td></tr>
+
                                             <tr id="row-phone">
-                                                <td style="padding-bottom: 3px;">
-                                                    <span style="vertical-align: middle; color: #333333; font-size: 14px;">📞</span>
-                                                    <a id="sig-phone-link" href="#" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 4px;">
+                                                <td style="padding-top: 10px; padding-bottom: 3px;">
+                                                    <!-- Icono Rojo -->
+                                                    <span style="color: #E20613; font-weight: bold; font-size: 14px; margin-right: 5px;">📞</span>
+                                                    <a id="sig-phone-link" href="#" style="text-decoration: none; color: #555555; font-size: 13px; vertical-align: middle;">
                                                         <span id="sig-phone">962 87 90 00</span>
                                                     </a>
                                                 </td>
                                             </tr>
                                             <tr id="row-email">
                                                 <td style="padding-bottom: 3px;">
-                                                    <span style="vertical-align: middle; color: #333333; font-size: 14px;">✉️</span>
-                                                    <a id="sig-email-link" href="#" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 4px;">
+                                                    <span style="color: #E20613; font-weight: bold; font-size: 14px; margin-right: 5px;">✉️</span>
+                                                    <a id="sig-email-link" href="#" style="text-decoration: none; color: #555555; font-size: 13px; vertical-align: middle;">
                                                         <span id="sig-email">info@duracero.com</span>
                                                     </a>
                                                 </td>
@@ -260,34 +265,34 @@
                                         </table>
                                     </td>
 
-                                    <!-- 3. CELDA LINEA DIVISORIA -->
-                                    <td width="1" bgcolor="#E20613" style="width: 1px; font-size: 1px; line-height: 1px;">&nbsp;</td>
+                                    <!-- 3. CELDA LINEA DIVISORIA GRUESA -->
+                                    <td width="2" bgcolor="#E20613" style="width: 2px; font-size: 1px; line-height: 1px; background-color: #E20613;">&nbsp;</td>
 
                                     <!-- 4. CELDA LOGO Y DIRECCIÓN -->
-                                    <td style="vertical-align: top; padding-left: 20px; text-align: left;">
+                                    <td style="vertical-align: middle; padding-left: 25px; text-align: left;">
                                         <table cellpadding="0" cellspacing="0" border="0">
                                             <tbody>
                                             <tr>
-                                                <td style="padding-bottom: 10px;">
-                                                    <!-- LOGO NATIVO 214x25 -->
-                                                    <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" width="214" height="25" style="display: block; border: 0; max-width: 214px;">
+                                                <td style="padding-bottom: 15px;">
+                                                    <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" width="200" style="display: block; border: 0; max-width: 200px;">
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding-top: 0px; padding-bottom: 5px; text-align: left; font-size: 11px; color: #666666; line-height: 1.4;">
+                                                <td style="text-align: left; font-size: 12px; color: #666666; line-height: 1.4;">
+                                                    <strong style="color: #333333;">Sede Central</strong><br>
                                                     Av. Alcodar, 16 (P.I. Alcodar)<br>
                                                     46701 Gandía (Valencia)
                                                 </td>
                                             </tr>
                                             <tr id="sig-social-media" style="display: none;">
-                                                <td style="text-align: left; font-size: 13px;">
-                                                    <a href="https://www.linkedin.com/company/hierros-duracero-sl" target="_blank" style="text-decoration: none; color: #333333; font-weight: bold; margin-right: 10px;">LinkedIn</a>
-                                                    <a href="https://www.instagram.com/hierrosduracero" target="_blank" style="text-decoration: none; color: #333333; font-weight: bold;">Instagram</a>
+                                                <td style="text-align: left; padding-top: 10px; font-size: 12px;">
+                                                    <a href="https://www.linkedin.com/company/hierros-duracero-sl" target="_blank" style="text-decoration: none; color: #E20613; font-weight: bold; margin-right: 10px;">LinkedIn</a>
+                                                    <a href="https://www.instagram.com/hierrosduracero" target="_blank" style="text-decoration: none; color: #E20613; font-weight: bold;">Instagram</a>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left;">
-                                                    <a href="https://duracero.com" target="_blank" style="text-decoration: none; font-size: 12px; font-weight: bold; color: #333333;">duracero.com</a>
+                                                <td style="padding-top: 8px;">
+                                                    <a href="https://duracero.com" target="_blank" style="text-decoration: none; font-size: 12px; font-weight: bold; color: #333333; border-bottom: 1px solid #E20613;">duracero.com</a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -296,36 +301,21 @@
                                 </tr>
 
                                 <!-- ESPACIADOR -->
-                                <tr><td colspan="4" height="20" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
+                                <tr><td colspan="4" height="25" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
 
-                                <!-- AVISO LEGAL COMPLETO -->
+                                <!-- AVISO LEGAL COMPLETO (Estilo más ligero) -->
                                 <tr id="sig-legal-full">
-                                    <td colspan="4" style="border-top: 1px solid #dddddd; padding-top: 15px;">
-                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family: Arial, sans-serif; font-size: 10px; color: #888888;">
+                                    <td colspan="4" style="border-top: 1px solid #eeeeee; padding-top: 15px;">
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family: Arial, sans-serif; font-size: 9px; color: #999999; line-height: 1.3;">
                                             <tbody>
                                             <tr>
-                                                <td colspan="2" style="padding-bottom: 6px; font-weight: bold; font-size: 11px; color: #444444;">Información sobre protección de datos</td>
+                                                <td colspan="2" style="padding-bottom: 4px; font-weight: bold; font-size: 10px; color: #666666;">Protección de Datos - HIERROS DURACERO SL</td>
                                             </tr>
                                             <tr>
-                                                <td width="100" style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Responsable:</td>
-                                                <td style="padding: 1px 0;">HIERROS DURACERO SL</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Finalidad:</td>
-                                                <td style="padding: 1px 0;">Gestión administrativa y comercial.</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Destinatario:</td>
-                                                <td style="padding: 1px 0;">No se cederán datos a terceros, salvo obligación legal.</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Derechos:</td>
-                                                <td style="padding: 1px 0;">Acceso, Rectificación, Supresión, Portabilidad, limitación u oposición al tratamiento de los datos suministrados.
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" style="padding-top: 6px;">
-                                                    Lea nuestra <a href="http://www.duracero.com/avisos_legal_mail" style="color: #E20613; text-decoration: underline;">política de privacidad</a>.
+                                                <td colspan="2">
+                                                    <strong>Responsable:</strong> HIERROS DURACERO SL | <strong>Finalidad:</strong> Gestión administrativa/comercial. | <strong>Destinatario:</strong> No se cederán datos salvo obligación legal. | <strong>Derechos:</strong> Acceso, rectificación, supresión, oposición.
+                                                    <br>
+                                                    Este mensaje es confidencial. Consulte nuestra <a href="http://www.duracero.com/avisos_legal_mail" style="color: #999999; text-decoration: underline;">política de privacidad</a>.
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -335,9 +325,8 @@
 
                                 <!-- LINK LEGAL CORTO -->
                                 <tr id="sig-legal-short" style="display: none;">
-                                    <td colspan="4" style="border-top: 1px solid #dddddd; padding-top: 10px; font-size: 10px; color: #888888; font-family: Arial, sans-serif;">
-                                        Este mensaje es confidencial y está sujeto a nuestra
-                                        <a href="http://www.duracero.com/avisos_legal_mail" style="color: #888888; text-decoration: underline;">política de privacidad</a>.
+                                    <td colspan="4" style="border-top: 1px solid #eeeeee; padding-top: 10px; font-size: 10px; color: #999999; font-family: Arial, sans-serif;">
+                                        Este mensaje es confidencial. Consulte nuestra <a href="http://www.duracero.com/avisos_legal_mail" style="color: #999999; text-decoration: underline;">Política de privacidad</a>.
                                     </td>
                                 </tr>
 
@@ -393,7 +382,7 @@
         if (toastEl) bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
 
         setupListeners();
-        const saved = localStorage.getItem('duraceroSignatureV5');
+        const saved = localStorage.getItem('duraceroSignatureV6');
         if (saved) {
             try { currentState = { ...defaults, ...JSON.parse(saved) }; }
             catch(e) { console.error('Error', e); }
@@ -457,7 +446,6 @@
         document.getElementById('sig-email').textContent = currentState.email || defaults.email;
         document.getElementById('sig-email-link').href = 'mailto:' + (currentState.email || defaults.email);
 
-        // LOGICA FOTO (El logo ya no cambia, siempre es 214x25)
         const imgEl = document.getElementById('sig-photo-img');
         const cellEl = document.getElementById('sig-photo-cell');
 
@@ -518,13 +506,13 @@
     }
 
     function saveLocal() {
-        localStorage.setItem('duraceroSignatureV5', JSON.stringify(currentState));
+        localStorage.setItem('duraceroSignatureV6', JSON.stringify(currentState));
     }
 
     function resetFields() {
         if(confirm('¿Restablecer valores por defecto?')) {
             currentState = { ...defaults };
-            localStorage.removeItem('duraceroSignatureV5');
+            localStorage.removeItem('duraceroSignatureV6');
             updateUIFromState();
             showToast('Datos restablecidos', 'secondary');
         }
