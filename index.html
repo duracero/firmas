@@ -3,460 +3,590 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Firmas v2 - HIERROS DURACERO</title>
+    <title>Generador de Firmas v4 - HIERROS DURACERO</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/favicon.ico" type="image/x-icon">
     <style>
         :root {
             --primary: #E20613;
             --dark: #121112;
             --light: #f8f9fa;
-            --red: #f44336;
-            --blue: #007bff;
         }
 
         body {
             background-color: var(--light);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        .navbar-brand img {
-            max-height: 25px;
-        }
-
-        .container-main {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-            min-height: calc(100vh - 13rem);
-        }
+        .navbar-brand img { max-height: 28px; }
+        .container-main { padding-top: 2rem; padding-bottom: 3rem; }
 
         .card-header-left {
             background-color: var(--dark);
             color: white;
             padding: 1rem;
             border-bottom: 3px solid var(--primary);
-        }
-        .card-header-right {
-            background-color: transparent;
-            color: #ccc5b9;
-            padding: 1rem;
-            border-bottom: 3px solid transparent;
-        }
-        
-        .card-body {
-            background-color: white;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .form-label {
-            font-weight: 600;
+        .card-header-right {
+            background-color: white;
+            color: #6c757d;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* Estilos para Inputs Desactivados Visualmente */
+        .input-group.field-hidden .form-control {
+            background-color: #f2f2f2;
+            color: #adb5bd;
+            text-decoration: line-through;
+        }
+        .input-group.field-hidden .btn-toggle-eye {
+            border-color: #ced4da;
+        }
+
+        .btn-toggle-eye {
+            border-color: #dee2e6;
+            color: #6c757d;
+            background-color: white;
+        }
+        .btn-toggle-eye.active {
+            background-color: #e9ecef;
+            color: var(--dark);
+        }
+        .btn-toggle-eye:hover {
+            color: var(--primary);
+            background-color: #f8f9fa;
         }
 
         .btn-primary {
             background-color: var(--primary);
             border-color: var(--primary);
         }
-        
         .btn-primary:hover {
             background-color: #c40410;
             border-color: #c40410;
         }
 
-        .btn-dark {
-            background-color: var(--dark);
-            border-color: var(--dark);
+        .preview-container {
+            overflow-x: auto;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 30px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        footer {
-            padding: 2rem 0;
-            background-color: #e9ecef;
-            font-size: 0.9rem;
-            width: 100%;
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #adb5bd;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
         }
-        .main-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            grid-gap: 1rem;
-            align-items: stretch;
-        }
-        .tarjeta {
-            display: flex;
-            flex-direction: column;
-        }
-        .tarjeta-content {
-            flex: 1;
-        }
-        .m-top {
-            margin-top: 20px;
-        }
-        
-        #toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1080;
-        }
+
+        #toast { z-index: 1090; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero">
-            </a>
+<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero">
+            <span class="ms-2 fs-6 text-muted align-middle">| Generador v4</span>
+        </a>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm" onclick="triggerImport()" title="Importar configuración">
+                <i class="bi bi-upload"></i>
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="exportSettings()" title="Exportar configuración">
+                <i class="bi bi-download"></i>
+            </button>
+            <input type="file" id="file-import" style="display: none;" accept=".json">
         </div>
-    </nav>
-    <div class="container container-main">
-        <div class="main-grid">
-            <div class="card shadow-sm">
+    </div>
+</nav>
+
+<div class="container container-main">
+    <div class="row g-4">
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
                 <div class="card-header card-header-left">
-                    <h4 class="mb-0">Completa tus datos</h4>
+                    <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Tus Datos</h5>
+                    <button class="btn btn-sm btn-outline-light border-0" onclick="resetFields()" title="Restablecer todo">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
                 </div>
                 <div class="card-body p-4">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label for="input-name" class="form-label">Nombre Completo</label>
-                            <input type="text" class="form-control" id="input-name" placeholder="Ej. Juan Pérez">
-                        </div>
-                        <div class="col-12">
-                            <label for="input-job" class="form-label">Cargo</label>
+
+                    <div class="section-title mt-0">Personal</div>
+
+                    <div class="mb-3">
+                        <label for="input-name" class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-control" id="input-name" placeholder="Ej. Juan Pérez">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="input-job" class="form-label">Cargo</label>
+                        <div class="input-group" id="group-job">
                             <input type="text" class="form-control" id="input-job" placeholder="Ej. Director Comercial">
+                            <button class="btn btn-outline-secondary btn-toggle-eye" type="button" id="toggle-job" onclick="toggleVisibility('job')">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
-                        <div class="col-12">
-                            <label for="input-phone" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control" id="input-phone" placeholder="Ej. +34 600 123 456">
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="check-photo">
+                            <label class="form-check-label" for="check-photo">Añadir foto de perfil</label>
                         </div>
-                        <div class="col-12">
-                            <label for="input-email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="input-email" placeholder="Ej. juan.perez@duracero.com">
+                    </div>
+
+                    <div class="mb-3 bg-light p-3 rounded border" id="photo-config" style="display: none;">
+                        <label for="input-photo-url" class="form-label small">URL de la imagen (Cuadrada)</label>
+                        <input type="url" class="form-control form-control-sm mb-1" id="input-photo-url" placeholder="https://...">
+                        <small class="text-muted d-block" style="font-size: 0.70rem;">
+                            La imagen se recortará en círculo automáticamente.
+                        </small>
+                    </div>
+
+                    <div class="section-title">Contacto</div>
+
+                    <div class="mb-3">
+                        <label for="input-phone" class="form-label">Teléfono</label>
+                        <div class="input-group" id="group-phone">
+                            <input type="text" class="form-control" id="input-phone" placeholder="962 87 90 00">
+                            <button class="btn btn-outline-secondary btn-toggle-eye" type="button" id="toggle-phone" onclick="toggleVisibility('phone')">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
-                        <div class="col-12 mt-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="input-social" disabled>
-                                <label class="form-check-label" for="input-social">
-                                    Incluir redes sociales (Muy Pronto)
-                                </label>
-                            </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="input-email" class="form-label">Email</label>
+                        <div class="input-group" id="group-email">
+                            <input type="email" class="form-control" id="input-email" placeholder="info@duracero.com">
+                            <button class="btn btn-outline-secondary btn-toggle-eye" type="button" id="toggle-email" onclick="toggleVisibility('email')">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="input-policy">
-                                <label class="form-check-label" for="input-policy">
-                                    Incluir política de protección de datos
-                                </label>
-                            </div>
+                    </div>
+
+                    <div class="section-title">Opciones</div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="input-social">
+                            <label class="form-check-label" for="input-social">
+                                Incluir redes sociales
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="input-policy" checked>
+                            <label class="form-check-label" for="input-policy">
+                                Tabla legal completa
+                            </label>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="tarjeta">
+        </div>
+
+        <!-- COLUMNA DERECHA: VISTA PREVIA -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
                 <div class="card-header card-header-right">
-                    <h4 class="mb-0">Vista previa</h4>
+                    <h5 class="mb-0">Vista previa</h5>
                 </div>
-                <div class="card shadow-sm tarjeta-content">
-                    <div class="card-body">
+                <div class="card-body d-flex flex-column">
+
+                    <div class="preview-container mb-4 flex-grow-1">
+
+                        <!-- INICIO DISEÑO FIRMA -->
                         <div id="signature-render">
-                            <!-- INICIO DEL DISENO DE FIRMA -->
-                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333333; min-width: 450px;">
-                                <tbody><tr>
-                                    <!-- Datos Personales -->
-                                    <td style="padding-right: 20px; vertical-align: top;">
-                                        <table cellpadding="0" cellspacing="0" border="0">
-                                            <tbody><tr>
-                                                <td style="padding-bottom: 2px;">
-                                                    <strong id="sig-name" style="font-size: 18px; color: #121112; font-family: Arial, sans-serif;">Nombre Apellido</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td id="sig-job" style="padding-bottom: 12px; font-size: 14px; font-weight: bold; color: #E20613; font-family: Arial, sans-serif; text-transform: uppercase;">Cargo / Puesto</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 5px;">
-                                                    <span style="vertical-align: middle;">📞</span>
-                                                    <a id="sig-phone-link" href="tel:600000000" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 5px;">
-                                                        <span id="sig-phone">600 000 000</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-bottom: 5px;">
-                                                    <span style="vertical-align: middle;">✉️</span>
-                                                    <a id="sig-email-link" href="mailto:email@duracero.com" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 5px;">
-                                                        <span id="sig-email">email@duracero.com</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody></table>
+                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333333; min-width: 450px; background-color: transparent;">
+                                <tbody>
+                                <!-- FILA PRINCIPAL: All el contenido en una fila para asegurar alturas iguales -->
+                                <tr>
+                                    <!-- 1. CELDA FOTO (Opcional) -->
+                                    <td id="sig-photo-cell" style="padding-right: 15px; vertical-align: top; width: 60px; display: none;">
+                                        <img id="sig-photo-img" src="" alt="Foto" width="60" height="60" style="display: block; border-radius: 50%; object-fit: cover; border: 0;">
                                     </td>
 
-                                    <!-- Separador Vertical -->
-                                    <td width="20" style="border-left: 1px solid #E20613;"></td>
-
-                                    <!-- Logo y Redes -->
-                                    <td style="padding-left: 20px; vertical-align: top; text-align: left;">
+                                    <!-- 2. CELDA DATOS -->
+                                    <td style="vertical-align: top; padding-right: 20px;">
                                         <table cellpadding="0" cellspacing="0" border="0">
-                                            <tbody><tr>
-                                                <td style="padding-bottom: 15px;">
-                                                    <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" height="25" style="border: 0;">
+                                            <tbody>
+                                            <tr>
+                                                <td style="padding-bottom: 2px;">
+                                                    <strong id="sig-name" style="font-size: 18px; color: #121112; font-family: Arial, sans-serif; white-space: nowrap;">Nombre Apellido</strong>
                                                 </td>
                                             </tr>
-                                            <tr id="sig-social-media">
-                                                <td style="text-align: left; font-size: 13px;">
-                                                    <a href="https://www.linkedin.com/company/hierros-duracero-sl" target="_blank" style="text-decoration: none; color: #333333; font-weight: bold; margin-right: 10px;">
-                                                       LinkedIn
+                                            <tr id="row-job">
+                                                <td id="sig-job" style="padding-bottom: 10px; font-size: 13px; font-weight: bold; color: #E20613; font-family: Arial, sans-serif; text-transform: uppercase;">Cargo / Puesto</td>
+                                            </tr>
+                                            <tr id="row-phone">
+                                                <td style="padding-bottom: 3px;">
+                                                    <span style="vertical-align: middle; color: #333333; font-size: 14px;">📞</span>
+                                                    <a id="sig-phone-link" href="#" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 4px;">
+                                                        <span id="sig-phone">962 87 90 00</span>
                                                     </a>
-                                                    <a href="https://www.instagram.com/hierrosduracero" target="_blank" style="text-decoration: none; color: #333333; font-weight: bold;">
-                                                       Instagram
+                                                </td>
+                                            </tr>
+                                            <tr id="row-email">
+                                                <td style="padding-bottom: 3px;">
+                                                    <span style="vertical-align: middle; color: #333333; font-size: 14px;">✉️</span>
+                                                    <a id="sig-email-link" href="#" style="text-decoration: none; color: #333333; font-size: 13px; vertical-align: middle; margin-left: 4px;">
+                                                        <span id="sig-email">info@duracero.com</span>
                                                     </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                    <!-- 3. CELDA LINEA DIVISORIA (Se estira automáticamente) -->
+                                    <td width="1" bgcolor="#E20613" style="width: 1px; font-size: 1px; line-height: 1px;">&nbsp;</td>
+
+                                    <!-- 4. CELDA LOGO Y DIRECCIÓN -->
+                                    <td style="vertical-align: top; padding-left: 20px; text-align: left;">
+                                        <table cellpadding="0" cellspacing="0" border="0">
+                                            <tbody>
+                                            <tr>
+                                                <td style="padding-bottom: 10px;">
+                                                    <!-- Logo con ID para cambiar tamaño via JS -->
+                                                    <img id="sig-logo" src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" height="35" style="display: block; border: 0;">
+                                                </td>
+                                            </tr>
+                                            <tr id="sig-social-media" style="display: none;">
+                                                <td style="text-align: left; font-size: 13px; padding-bottom: 8px;">
+                                                    <a href="https://www.linkedin.com/company/hierros-duracero-sl" target="_blank" style="text-decoration: none; color: #333333; font-weight: bold; margin-right: 10px;">LinkedIn</a>
+                                                    <a href="https://www.instagram.com/hierrosduracero" target="_blank" style="text-decoration: none; color: #333333; font-weight: bold;">Instagram</a>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding-top: 5px; text-align: left; font-size: 13px; color: #333333;">
-                                                    Av. Alcodar, 16 (P.I. Alcodar). 46701 Gandía (Valencia)
+                                                <td style="padding-top: 0px; text-align: left; font-size: 11px; color: #666666; line-height: 1.4;">
+                                                    Av. Alcodar, 16 (P.I. Alcodar)<br>
+                                                    46701 Gandía (Valencia)
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding-top: 5px; text-align: left;">
-                                                     <a href="https://duracero.com" target="_blank" style="text-decoration: none; font-size: 13px; font-weight: bold; color: #333333;">
-                                                        duracero.com
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </tbody></table>
-                                    </td>
-                                </tr>
-                                <tr id="sig-spacer" style="display: none;">
-                                    <td colspan="3">&nbsp;</td>
-                                </tr>
-                                <tr id="sig-data-policy" style="display: none;">
-                                    <td colspan="3" style="padding-top: 20px; padding-bottom: 20px; border-top: 1px solid #dddddd; font-family: Arial, sans-serif; font-size: 10px; color: #888888;">
-                                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                                            <tbody>
-                                            <tr>
-                                                <td colspan="2" style="padding-bottom: 10px; font-weight: bold; font-size: 12px; color: #333333;">Información sobre protección de datos</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Responsable del Tratamiento</td>
-                                                <td style="padding: 2px 5px;">HIERROS DURACERO SL</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Finalidad del Tratamiento</td>
-                                                <td style="padding: 2px 5px;">Gestiones de comunicación con los clientes, proveedores y  contactos.</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Legitimación del Tratamiento</td>
-                                                <td style="padding: 2px 5px;">Consentimiento del Interesado</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Destinatario del Tratamiento</td>
-                                                <td style="padding: 2px 5px;">No se cederán datos a terceros, salvo obligación legal.</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 5px; background-color: #f2f2f2; font-weight: bold; white-space: nowrap; vertical-align: top;">Ejercicio de Derechos</td>
-                                                <td style="padding: 2px 5px;">Acceso, Rectificación, Supresión y Portabilidad de los datos aportados ante HIERROS DURACERO SL y limitación u oposición al tratamiento.</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" style="padding-top: 5px; text-align: left;">
-                                                    Para más información diríjase a <a href="http://www.duracero.com/avisos_legal_mail" style="color: #888888; text-decoration: none;">www.duracero.com/avisos_legal_mail</a>
+                                                    <a href="https://duracero.com" target="_blank" style="text-decoration: none; font-size: 12px; font-weight: bold; color: #333333;">duracero.com</a>
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </td>
                                 </tr>
-                            </tbody></table>
+
+                                <!-- ESPACIADOR -->
+                                <tr><td colspan="4" height="20" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
+
+                                <!-- AVISO LEGAL COMPLETO -->
+                                <tr id="sig-legal-full">
+                                    <td colspan="4" style="border-top: 1px solid #dddddd; padding-top: 15px;">
+                                        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family: Arial, sans-serif; font-size: 10px; color: #888888;">
+                                            <tbody>
+                                            <tr>
+                                                <td colspan="2" style="padding-bottom: 6px; font-weight: bold; font-size: 11px; color: #444444;">Información sobre protección de datos</td>
+                                            </tr>
+                                            <tr>
+                                                <td width="100" style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Responsable:</td>
+                                                <td style="padding: 1px 0;">HIERROS DURACERO SL</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Finalidad:</td>
+                                                <td style="padding: 1px 0;">Gestión administrativa y comercial.</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 1px 5px 1px 0; font-weight: bold; vertical-align: top;">Derechos:</td>
+                                                <td style="padding: 1px 0;">Acceso, rectificación, supresión y otros.</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="padding-top: 6px;">
+                                                    <a href="http://www.duracero.com/avisos_legal_mail" style="color: #E20613; text-decoration: underline;">Política de privacidad completa</a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <!-- LINK LEGAL CORTO -->
+                                <tr id="sig-legal-short" style="display: none;">
+                                    <td colspan="4" style="border-top: 1px solid #dddddd; padding-top: 10px; font-size: 10px; color: #888888; font-family: Arial, sans-serif;">
+                                        Este mensaje es confidencial.
+                                        <a href="http://www.duracero.com/avisos_legal_mail" style="color: #888888; text-decoration: underline;">Ver política de privacidad</a>.
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- FIN DEL DISENO DE FIRMA -->
+                        <!-- FIN DISEÑO FIRMA -->
+
                     </div>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end m-top">
-                    <button class="btn btn-primary btn-lg px-4 me-md-2" onclick="copySignature()">Copiar Firma</button>
-                    <button class="btn btn-outline-secondary px-4" onclick="resetFields()">Restablecer</button>
-                    <button class="btn btn-dark px-4" onclick="saveData()">Guardar mis datos</button>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-lg" onclick="copySignature()">
+                            <i class="bi bi-clipboard-check me-2"></i>Copiar Firma
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <footer class="mt-5">
-        <div class="container text-center">
-            <p class="text-muted">&copy; 2025 Hierros Duracero S.L. | Herramienta interna de generación de firmas.</p>
+<!-- Toast -->
+<div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1100">
+    <div id="toast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body fs-6"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-    </footer>
-    
-    <!-- Toast para notificaciones -->
-    <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body"></div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const fields = {
-            'input-name': 'sig-name',
-            'input-job': 'sig-job',
-            'input-phone': 'sig-phone',
-            'input-email': 'sig-email'
-        };
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const defaults = {
+        name: 'Nombre Apellido',
+        job: 'Cargo / Puesto',
+        phone: '962 87 90 00',
+        email: 'info@duracero.com',
+        photoUrl: '',
+        showJob: true,
+        showPhone: true,
+        showEmail: true,
+        showPhoto: false,
+        showSocial: false,
+        fullPolicy: true
+    };
 
-        const links = {
-            'input-phone': { id: 'sig-phone-link', prefix: 'tel:' },
-            'input-email': { id: 'sig-email-link', prefix: 'mailto:' }
-        };
+    let currentState = { ...defaults };
+    let bsToast;
 
-        const toggles = {
-            'input-social': 'sig-social-media',
-            'input-policy': ['sig-spacer', 'sig-data-policy']
-        };
+    document.addEventListener('DOMContentLoaded', function() {
+        const toastEl = document.getElementById('toast');
+        if (toastEl) bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
 
-        const defaults = {
-            'input-name': 'Nombre Apellido',
-            'input-job': 'Cargo / Puesto',
-            'input-phone': '+34 600 000 000',
-            'input-email': 'email@duracero.com',
-            'input-social': false,
-            'input-policy': true
-        };
+        setupListeners();
+        const saved = localStorage.getItem('duraceroSignatureV4');
+        if (saved) {
+            try { currentState = { ...defaults, ...JSON.parse(saved) }; }
+            catch(e) { console.error('Error', e); }
+        }
+        updateUIFromState();
+    });
 
-        let bsToast;
+    function setupListeners() {
+        document.getElementById('input-name').addEventListener('input', (e) => updateField('name', e.target.value));
+        document.getElementById('input-job').addEventListener('input', (e) => updateField('job', e.target.value));
+        document.getElementById('input-email').addEventListener('input', (e) => updateField('email', e.target.value));
+        document.getElementById('input-photo-url').addEventListener('input', (e) => updateField('photoUrl', e.target.value));
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const toastEl = document.getElementById('toast');
-            if (toastEl) {
-                bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
-            }
-            setupEventListeners();
-            loadData();
+        const phoneInput = document.getElementById('input-phone');
+        phoneInput.addEventListener('input', (e) => {
+            const formatted = formatPhoneNumber(e.target.value);
+            if(e.inputType !== 'deleteContentBackward' || e.target.value.length > 0) phoneInput.value = formatted;
+            updateField('phone', formatted);
         });
 
-        function setupEventListeners() {
-            Object.keys(fields).forEach(inputId => {
-                const input = document.getElementById(inputId);
-                if (!input) return;
-                input.addEventListener('input', function() {
-                    const targetElement = document.getElementById(fields[inputId]);
-                    if (!targetElement) return;
-                    targetElement.textContent = this.value.trim() === '' ? defaults[inputId] : this.value;
+        document.getElementById('check-photo').addEventListener('change', (e) => updateField('showPhoto', e.target.checked));
+        document.getElementById('input-social').addEventListener('change', (e) => updateField('showSocial', e.target.checked));
+        document.getElementById('input-policy').addEventListener('change', (e) => updateField('fullPolicy', e.target.checked));
+        document.getElementById('file-import').addEventListener('change', handleFileImport);
+    }
 
-                    if (links[inputId]) {
-                        document.getElementById(links[inputId].id).href = links[inputId].prefix + this.value.replace(/\s+/g, '');
-                    }
-                });
-            });
+    function updateField(key, value) {
+        currentState[key] = value;
+        renderSignature();
+        saveLocal();
 
-            Object.keys(toggles).forEach(toggleId => {
-                const checkbox = document.getElementById(toggleId);
-                if (!checkbox) return;
-                checkbox.addEventListener('change', function() {
-                    const targets = Array.isArray(toggles[toggleId]) ? toggles[toggleId] : [toggles[toggleId]];
-                    targets.forEach(targetId => {
-                        const targetElement = document.getElementById(targetId);
-                        if (!targetElement) return;
+        if (key === 'showPhoto') document.getElementById('photo-config').style.display = value ? 'block' : 'none';
+    }
 
-                        if (this.checked) {
-                            targetElement.style.display = 'table-row';
-                        } else {
-                            targetElement.style.display = 'none';
-                        }
-                    });
-                });
-            });
+    function toggleVisibility(field) {
+        const key = 'show' + field.charAt(0).toUpperCase() + field.slice(1);
+        currentState[key] = !currentState[key];
+        updateUIFromState();
+        renderSignature();
+        saveLocal();
+    }
+
+    function formatPhoneNumber(value) {
+        let numbers = value.replace(/\D/g, '');
+        if (numbers.length > 9) numbers = numbers.substring(0, 9);
+        let formatted = numbers;
+        if (numbers.length > 3) formatted = numbers.slice(0, 3) + ' ' + numbers.slice(3);
+        if (numbers.length > 5) formatted = formatted.slice(0, 6) + ' ' + formatted.slice(6);
+        if (numbers.length > 7) formatted = formatted.slice(0, 9) + ' ' + formatted.slice(9);
+        return formatted;
+    }
+
+    function renderSignature() {
+        document.getElementById('sig-name').textContent = currentState.name || defaults.name;
+        document.getElementById('sig-job').textContent = currentState.job || defaults.job;
+
+        const cleanPhone = currentState.phone.replace(/\s/g, '');
+        document.getElementById('sig-phone').textContent = currentState.phone || defaults.phone;
+        document.getElementById('sig-phone-link').href = 'tel:+34' + (cleanPhone || '962879000');
+
+        document.getElementById('sig-email').textContent = currentState.email || defaults.email;
+        document.getElementById('sig-email-link').href = 'mailto:' + (currentState.email || defaults.email);
+
+        // LOGICA FOTO Y LOGO
+        const imgEl = document.getElementById('sig-photo-img');
+        const cellEl = document.getElementById('sig-photo-cell');
+        const logoEl = document.getElementById('sig-logo');
+
+        if (currentState.showPhoto && currentState.photoUrl) {
+            imgEl.src = currentState.photoUrl;
+            cellEl.style.display = 'table-cell';
+            // Si hay foto, el logo se reduce
+            logoEl.height = 25;
+        } else {
+            cellEl.style.display = 'none';
+            // Si no hay foto, el logo tiene tamaño normal
+            logoEl.height = 35;
         }
 
-        function loadData() {
-            const savedData = JSON.parse(localStorage.getItem('duraceroSignatureData'));
-            const dataToLoad = savedData || defaults;
+        document.getElementById('row-job').style.display = currentState.showJob ? 'table-row' : 'none';
+        document.getElementById('row-phone').style.display = currentState.showPhone ? 'table-row' : 'none';
+        document.getElementById('row-email').style.display = currentState.showEmail ? 'table-row' : 'none';
+        document.getElementById('sig-social-media').style.display = currentState.showSocial ? 'table-row' : 'none';
 
-            Object.keys(defaults).forEach(key => {
-                const el = document.getElementById(key);
-                if (!el) return;
-
-                if (el.type === 'checkbox') {
-                    el.checked = dataToLoad[key] === true; // Ensure boolean
-                } else {
-                    el.value = dataToLoad[key] || defaults[key];
-                }
-                el.dispatchEvent(new Event('input'));
-                el.dispatchEvent(new Event('change'));
-            });
-
-            if (!savedData) {
-                 resetFields(false); // No mostrar toast en la carga inicial
-            }
+        if (currentState.fullPolicy) {
+            document.getElementById('sig-legal-full').style.display = 'table-row';
+            document.getElementById('sig-legal-short').style.display = 'none';
+        } else {
+            document.getElementById('sig-legal-full').style.display = 'none';
+            document.getElementById('sig-legal-short').style.display = 'table-row';
         }
+    }
 
-        function saveData() {
-            const data = {};
-            Object.keys(defaults).forEach(key => {
-                 const el = document.getElementById(key);
-                 if (!el) return;
-                 if (el.type === 'checkbox') {
-                    data[key] = el.checked;
-                 } else {
-                    data[key] = el.value;
-                 }
-            });
-            localStorage.setItem('duraceroSignatureData', JSON.stringify(data));
-            showToast("Datos guardados en este navegador.", 'success');
+    function updateUIFromState() {
+        document.getElementById('input-name').value = currentState.name;
+        document.getElementById('input-job').value = currentState.job;
+        document.getElementById('input-phone').value = currentState.phone;
+        document.getElementById('input-email').value = currentState.email;
+        document.getElementById('input-photo-url').value = currentState.photoUrl;
+        document.getElementById('check-photo').checked = currentState.showPhoto;
+        document.getElementById('input-social').checked = currentState.showSocial;
+        document.getElementById('input-policy').checked = currentState.fullPolicy;
+
+        document.getElementById('photo-config').style.display = currentState.showPhoto ? 'block' : 'none';
+
+        updateToggleVisuals('job', currentState.showJob);
+        updateToggleVisuals('phone', currentState.showPhone);
+        updateToggleVisuals('email', currentState.showEmail);
+
+        renderSignature();
+    }
+
+    function updateToggleVisuals(field, isVisible) {
+        const group = document.getElementById('group-' + field);
+        const btn = document.getElementById('toggle-' + field);
+        const icon = btn.querySelector('i');
+
+        if (isVisible) {
+            group.classList.remove('field-hidden');
+            icon.className = 'bi bi-eye';
+            btn.classList.remove('active');
+        } else {
+            group.classList.add('field-hidden');
+            icon.className = 'bi bi-eye-slash';
+            btn.classList.add('active');
         }
+    }
 
-        function resetFields(show = true) {
-            Object.keys(defaults).forEach(key => {
-                const el = document.getElementById(key);
-                if (!el) return;
-                if (el.type === 'checkbox') {
-                    el.checked = defaults[key];
-                } else {
-                    el.value = defaults[key];
-                }
-                el.dispatchEvent(new Event('input'));
-                el.dispatchEvent(new Event('change'));
-            });
-            localStorage.removeItem('duraceroSignatureData');
-            if (show) {
-                showToast("Campos restablecidos.", 'info');
-            }
+    function saveLocal() {
+        localStorage.setItem('duraceroSignatureV4', JSON.stringify(currentState));
+    }
+
+    function resetFields() {
+        if(confirm('¿Restablecer valores por defecto?')) {
+            currentState = { ...defaults };
+            localStorage.removeItem('duraceroSignatureV4');
+            updateUIFromState();
+            showToast('Datos restablecidos', 'secondary');
         }
+    }
 
-        function copySignature() {
-            const signatureElement = document.getElementById('signature-render');
+    function exportSettings() {
+        const dataStr = JSON.stringify(currentState, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `duracero_${currentState.name.replace(/\s+/g, '_')}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Configuración exportada', 'success');
+    }
+
+    function triggerImport() { document.getElementById('file-import').click(); }
+
+    function handleFileImport(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                currentState = { ...defaults, ...JSON.parse(e.target.result) };
+                updateUIFromState();
+                saveLocal();
+                showToast('Importado con éxito', 'success');
+            } catch (err) { showToast('Error en archivo', 'danger'); }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    }
+
+    async function copySignature() {
+        const sig = document.getElementById('signature-render');
+        try {
+            const htmlContent = sig.innerHTML;
+            const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+            const blobText = new Blob([sig.innerText], { type: 'text/plain' });
+            await navigator.clipboard.write([new ClipboardItem({'text/html': blobHtml, 'text/plain': blobText})]);
+            showToast('¡Firma copiada!', 'success');
+        } catch (err) {
             const range = document.createRange();
-            range.selectNode(signatureElement);
+            range.selectNode(sig);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
-
-            try {
-                document.execCommand('copy');
-                showToast("¡Firma copiada! Pégala en la configuración de tu cliente de email.");
-            } catch (err) {
-                showToast("Error al copiar. Selecciona y copia la firma manualmente.", 'danger');
-            } finally {
-                window.getSelection().removeAllRanges();
-            }
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            showToast('Firma copiada (modo compatible)', 'success');
         }
+    }
 
-        function showToast(message, type = 'success') {
-            const toastEl = document.getElementById('toast');
-            const toastBody = toastEl.querySelector('.toast-body');
-
-            toastEl.className = 'toast align-items-center text-white border-0'; // Reset classes
-            if (type === 'danger') {
-                toastEl.classList.add('bg-danger');
-            } else if (type === 'info') {
-                 toastEl.classList.add('bg-secondary');
-            }
-            else {
-                toastEl.classList.add('bg-success');
-            }
-
-            if (toastBody) {
-                toastBody.textContent = message;
-            }
-            if (bsToast) {
-                bsToast.show();
-            }
-        }
-    </script>
+    function showToast(msg, type = 'success') {
+        const toastEl = document.getElementById('toast');
+        toastEl.className = `toast align-items-center text-white border-0 bg-${type}`;
+        toastEl.querySelector('.toast-body').textContent = msg;
+        bsToast.show();
+    }
+</script>
 </body>
 </html>
