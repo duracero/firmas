@@ -209,9 +209,9 @@
 
         <!-- COLUMNA DERECHA: VISTA PREVIA -->
         <div class="col-lg-7">
-            <div class="card shadow-sm h-100">
+            <div class="card shadow-sm">
                 <div class="card-header card-header-right">
-                    <h5 class="mb-0">Vista previa</h5>
+                    <h5 class="mb-0">Firma Completa</h5>
                 </div>
                 <div class="card-body d-flex flex-column">
 
@@ -339,7 +339,26 @@
 
                     <div class="d-grid gap-2">
                         <button class="btn btn-primary btn-lg" onclick="copySignature()">
-                            <i class="bi bi-clipboard-check me-2"></i>Copiar Firma
+                            <i class="bi bi-clipboard-check me-2"></i>Copiar Firma Completa
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista Previa Firma Compacta -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header card-header-right">
+                    <h5 class="mb-0">Firma Compacta (para respuestas)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="preview-container mb-4" style="min-height: 150px; padding: 20px;">
+                        <div id="signature-compact-render">
+                            <!-- El contenido se generará con JS -->
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-secondary" onclick="copyCompactSignature()">
+                            <i class="bi bi-clipboard me-2"></i>Copiar Firma Compacta
                         </button>
                     </div>
                 </div>
@@ -468,6 +487,62 @@
             document.getElementById('sig-legal-full').style.display = 'none';
             document.getElementById('sig-legal-short').style.display = 'table-row';
         }
+        renderCompactSignature();
+    }
+
+    function renderCompactSignature() {
+        const name = currentState.name || defaults.name;
+        const job = currentState.showJob ? (currentState.job || defaults.job) : '';
+
+        const html = `
+        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #333333;">
+            <tbody>
+                <tr>
+                    <td style="vertical-align: middle; padding-right: 15px;">
+                        <strong style="font-size: 16px; color: #121112; white-space: nowrap;">${name}</strong>
+                        ${job ? `<br><span style="font-size: 11px; color: #E20613; text-transform: uppercase; letter-spacing: 1px;">${job}</span>` : ''}
+                    </td>
+                    <td style="vertical-align: middle; border-left: 1px solid #eeeeee; padding-left: 15px;">
+                        <img src="https://cdn.jsdelivr.net/gh/duracero/mediakit@main/duracero_signature.png" alt="Logo Duracero" width="120" style="display: block; border: 0;">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+        document.getElementById('signature-compact-render').innerHTML = html;
+    }
+
+    async function copyCompactSignature() {
+        const sigNode = document.getElementById('signature-compact-render');
+        const htmlContent = sigNode.innerHTML;
+        const textContent = sigNode.innerText;
+
+        try {
+            const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+            const blobText = new Blob([textContent], { type: 'text/plain' });
+            await navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]);
+            showToast('¡Firma compacta copiada!', 'success');
+        } catch (err) {
+            console.error('Error copying compact signature with modern API:', err);
+            const fallbackContainer = document.createElement('div');
+            fallbackContainer.innerHTML = htmlContent;
+            document.body.appendChild(fallbackContainer);
+            const range = document.createRange();
+            range.selectNodeContents(fallbackContainer);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                showToast('Firma compacta copiada (modo compatible)', 'success');
+            } catch (copyErr) {
+                console.error('Fallback copy for compact signature failed:', copyErr);
+                showToast('No se pudo copiar la firma compacta', 'danger');
+            } finally {
+                document.body.removeChild(fallbackContainer);
+                selection.removeAllRanges();
+            }
+        }
     }
 
     function updateUIFromState() {
@@ -551,21 +626,52 @@
     }
 
     async function copySignature() {
-        const sig = document.getElementById('signature-render');
+        const sigNode = document.getElementById('signature-render');
+        const sigClone = sigNode.cloneNode(true);
+
+        // Remove elements that are visually hidden
+        const hiddenElements = sigClone.querySelectorAll('[style*="display: none"]');
+        hiddenElements.forEach(el => el.remove());
+
+        const getCleanHtml = (node) => {
+            // Some email clients are picky about table structure.
+            // Let's ensure we are copying the table itself.
+            const table = node.querySelector('table');
+            return table ? table.outerHTML : node.innerHTML;
+        };
+
+        const htmlContent = getCleanHtml(sigClone);
+        const textContent = sigNode.innerText; // Keep plain text version simple
+
         try {
-            const htmlContent = sig.innerHTML;
             const blobHtml = new Blob([htmlContent], { type: 'text/html' });
-            const blobText = new Blob([sig.innerText], { type: 'text/plain' });
-            await navigator.clipboard.write([new ClipboardItem({'text/html': blobHtml, 'text/plain': blobText})]);
+            const blobText = new Blob([textContent], { type: 'text/plain' });
+            await navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]);
             showToast('¡Firma copiada!', 'success');
         } catch (err) {
+            console.error('Error copying with modern API:', err);
+            // Fallback for older browsers
+            const fallbackContainer = document.createElement('div');
+            fallbackContainer.innerHTML = htmlContent;
+            document.body.appendChild(fallbackContainer);
+
             const range = document.createRange();
-            range.selectNode(sig);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            window.getSelection().removeAllRanges();
-            showToast('Firma copiada (modo compatible)', 'success');
+            range.selectNodeContents(fallbackContainer);
+            
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                showToast('Firma copiada (modo compatible)', 'success');
+            } catch (copyErr) {
+                console.error('Fallback copy failed:', copyErr);
+                showToast('No se pudo copiar la firma', 'danger');
+            } finally {
+                document.body.removeChild(fallbackContainer);
+                selection.removeAllRanges();
+            }
         }
     }
 
